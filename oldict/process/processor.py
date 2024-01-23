@@ -66,7 +66,11 @@ def parse_item(item):
         if pos in except_list:
             return
         elif pos in phrase_list:
-            word_dict["구"].append(word)
+            if pos == "":    
+                if " " in temp_word or "^" in temp_word:
+                    word_dict["구"].append(word)
+            else:
+                word_dict["구"].append(word)
         elif pos in pos_list:
             word_dict[pos].append(word)
     
