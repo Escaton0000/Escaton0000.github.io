@@ -1,7 +1,7 @@
 import json
 import os
 import re
-reg = re.compile(r'[^가-힣ㄱ-ㅎ]')
+reg = re.compile(r'[^가-힣ㄱ-ㅎㅏ-ㅣ]')
 dir_path = "opendict\origin"
 
 
@@ -19,8 +19,10 @@ unit_set = set() # ["wordinfo"]["word_unit"]
 type_set = set()  # ["senseinfo"]["type"]
 pos_set = set() # ["senseinfo"]["pos"]
 
+['감탄사', '동사', '관·명', '보조 동사', '접사', '관·감', '대명사', '대·감', '수사', '관형사', '형용사', '수·관', '대·관', '대·부', '부·감', '의명·조', '어미', '보조 형용사', '수·관·명', '부사', '명사', '명·부', '동·형', '품사 없음', '조사', '감·명', '의존 명사']
 type_list = ['북한어', '일반어', '방언', '옛말']
 pos_list = ['대명사', '감·명', '대·감', '명사', '관·명', '의명·조', '대·부', '부사', '관·감', '관형사', '대·관', '부·감', '수사', '수·관', '감탄사', '수·관·명', '조사', '명·부', '의존 명사']
+
 pos_map  = {
     '감·명' : ["감탄사","명사"],
     "대·감" : ["대명사","감탄사"],
@@ -42,6 +44,7 @@ for pos in pos_list:
     else:
         new_pos_list.add(pos)
 pos_list = new_pos_list
+pos_list.add("구")
 
 for type in type_list:
     word_dict[type] = {}
@@ -50,24 +53,30 @@ for type in type_list:
             
 def parseItems(item):
     unit = item["wordinfo"]["word_unit"]
-    if unit != "어휘":
-        return
-    word = item["wordinfo"]["word"]
-    # if " " in word or "ㆍ" in word:
-    #     return
-    word = word.replace("-", "")
-    not_korean = reg.findall(word)
-    if not_korean:
-        return
-    
-    pos = item["senseinfo"]["pos"]
-    type = item["senseinfo"]["type"]
+    if unit == "구":
+        word = item["wordinfo"]["word"]
+        type = item["senseinfo"]["type"]
+        word = word.strip().replace("-", "").replace(" ", "").replace("^", "").replace("ㆍ", "")
+        word_dict[type]["구"].append(word)
+        
 
-    if pos in pos_list:
-        word_dict[type][pos].append(word)
-    if pos in pos_map:
-        for p in pos_map[pos]:
-            word_dict[type][p].append(word)
+
+    if unit == "어휘":
+        word = item["wordinfo"]["word"]
+        
+        word = word.replace("-", "")
+        not_korean = reg.findall(word)
+        if not_korean:
+            return
+        
+        pos = item["senseinfo"]["pos"]
+        type = item["senseinfo"]["type"]
+        pos_set.add(pos)    
+        if pos in pos_list:
+            word_dict[type][pos].append(word)
+        if pos in pos_map:
+            for p in pos_map[pos]:
+                word_dict[type][p].append(word)
 
 
 
@@ -82,8 +91,8 @@ for file_path in file_paths:
 for cate in word_dict:
     for pos in word_dict[cate]:
         with open(f"opendict\db\{cate}\{pos}", "w", encoding = "UTF-8") as f:
-            lst = word_dict[cate][pos]
+            lst = sorted(list(set(word_dict[cate][pos])))
             text = '\n'.join(lst)
             f.write(text)
         
-word_dict
+print(pos_set)
