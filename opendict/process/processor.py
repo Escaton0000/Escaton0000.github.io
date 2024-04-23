@@ -2,7 +2,7 @@ import json
 import os
 import re
 reg = re.compile(r'[^가-힣ㄱ-ㅎㅏ-ㅣ]')
-dir_path = "opendict\origin"
+dir_path = "opendict\\origin"
 
 
 file_paths = []
@@ -54,7 +54,9 @@ for type in type_list:
 def parseItems(item):
     unit = item["wordinfo"]["word_unit"]
     if unit == "구":
+        
         word = item["wordinfo"]["word"]
+        
         type = item["senseinfo"]["type"]
         word = word.strip().replace("-", "").replace(" ", "").replace("^", "").replace("ㆍ", "")
         word_dict[type]["구"].append(word)
@@ -64,7 +66,7 @@ def parseItems(item):
     if unit == "어휘":
         word = item["wordinfo"]["word"]
         
-        word = word.replace("-", "")
+        word = word.replace("-", "").replace("ㆍ", "")
         not_korean = reg.findall(word)
         if not_korean:
             return
@@ -95,4 +97,4 @@ for cate in word_dict:
             text = '\n'.join(lst)
             f.write(text)
         
-print(pos_set)
+# print(pos_set)
