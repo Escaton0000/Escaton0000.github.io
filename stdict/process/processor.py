@@ -4,7 +4,7 @@ import re
 import pprint
  
 reg = re.compile(r'[^가-힣ㄱ-ㅎㅏ-ㅣ]')
-dir_path = "stdict\origin_excel"
+dir_path = "stdict\\origin_excel"
 
 
 file_paths = []
@@ -45,7 +45,7 @@ def parse_item(item):
     word_and_unit = item[0].replace("-", "").replace(" ", "").replace("^", "").split('\t')
     if len(word_and_unit) != 3:
         print(word_and_unit)
-    word = word_and_unit[0].rstrip("1234567890()")
+    word = word_and_unit[0].rstrip("1234567890()").replace("ㆍ", "")
     unit = word_and_unit[1]
     
     
@@ -87,7 +87,7 @@ for file_path in file_paths:
 
 
 for pos in word_dict:
-    with open(f"stdict\db\{pos}", "w", encoding = "UTF-8") as f:
+    with open(f"stdict\\db\\{pos}", "w", encoding = "UTF-8") as f:
         lst = sorted(list(set(word_dict[pos])))
         text = '\n'.join(lst)
         f.write(text)
