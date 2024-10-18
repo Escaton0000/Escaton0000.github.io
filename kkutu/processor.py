@@ -14,12 +14,12 @@ with open("kkutu/origin/db.txt", "r", encoding="UTF-8") as f:
         word, t = line.split()
         word = word[1:-1]
         t = [int(e) if e.isdigit() else e for e in t.strip()[1:-1].split(",")]
-        t = [e for e in t if e in type_range_injeong]
+        t = [e for e in t if e in type_range_no_injeong]
         if len(t) == 0:
             continue
         if len(word) == 1:
             continue
         words.append(word)
 
-with open("kkutu/origin/어인정.txt", "w", encoding="UTF-8") as f:
-    f.write("\n".join(words))
+with open("kkutu/db/노인정", "w", encoding="UTF-8") as f:
+    f.write("\n".join(sorted(list(set(words)))))
