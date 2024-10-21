@@ -13,7 +13,7 @@ with open("kkutu/origin/db.txt", "r", encoding="UTF-8") as f:
     for line in lines:
         word, t = line.split()
         word = word[1:-1]
-        t = [int(e) if e.isdigit() else e for e in t.strip()[1:-1].split(" ")]
+        t = [int(e) if e.isdigit() else e for e in t.strip()[1:-1].split(",")]
         t = [e for e in t if e in type_range_no_injeong]
         if len(t) == 0:
             continue
@@ -21,5 +21,5 @@ with open("kkutu/origin/db.txt", "r", encoding="UTF-8") as f:
             continue
         words.append(word)
 
-with open("kkutu/db/어인정_space", "w", encoding="UTF-8") as f:
-    f.write(" ".join(sorted(list(set(words)))))
+with open("kkutu/db/노인정", "w", encoding="UTF-8") as f:
+    f.write("\n".join(sorted(list(set(words)))))
